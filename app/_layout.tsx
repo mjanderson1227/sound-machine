@@ -43,6 +43,7 @@ export default function RootLayout() {
             name="signup"
             options={{ presentation: "modal", headerShown: false }}
           />
+          <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
       </ThemeProvider>

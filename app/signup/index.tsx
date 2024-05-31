@@ -11,7 +11,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from "react-native";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useForm, Controller } from "react-hook-form";
 import { isClerkAPIResponseError, useSignUp } from "@clerk/clerk-expo";
 import { useState } from "react";
@@ -50,15 +50,18 @@ const formSchema = z.object({
   password: z.string().max(100).min(8),
 });
 
+type SignUpData = z.infer<typeof formSchema>;
+
 export default function SignUpPage() {
   const { isLoaded, signUp, setActive } = useSignUp();
-  const [pendingVerification, setPendingVerification] = useState(true);
-  const [code, setCode] = useState("");
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const router = useRouter();
+
   const {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<z.infer<typeof formSchema>>({
+  } = useForm<SignUpData>({
     resolver: zodResolver(formSchema),
   });
 
@@ -68,7 +71,7 @@ export default function SignUpPage() {
     lastName,
     emailAddress,
     password,
-  }: z.infer<typeof formSchema>) => {
+  }: SignUpData) => {
     if (!isLoaded) {
       return;
     }
@@ -80,8 +83,6 @@ export default function SignUpPage() {
         emailAddress,
         password,
       });
-
-      console.log("SignUp object created");
 
       // send the email.
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -102,7 +103,7 @@ export default function SignUpPage() {
     }
   };
 
-  const onPressVerify = async () => {
+  const onPressVerify = (code: string) => async () => {
     if (!isLoaded) {
       return;
     }
@@ -113,18 +114,19 @@ export default function SignUpPage() {
       });
 
       await setActive({ session: completeSignUp.createdSessionId });
+      router.push("/");
     } catch (err: unknown) {
       console.error(JSON.stringify(err, null, 2));
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      className="bg-white h-full rounded-xl text-black px-10 pt-10 justify-center"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      {!pendingVerification ? (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} className="h-full">
+      <KeyboardAvoidingView
+        className="bg-white h-full rounded-xl text-black px-10 pt-10 justify-center"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        {!pendingVerification ? (
           <View>
             <Text className="mb-3 text-2xl font-bold text-center">
               Sign up for Serenity
@@ -143,10 +145,9 @@ export default function SignUpPage() {
                       className="w-full"
                       onChangeText={onChange}
                       onBlur={onBlur}
-                      autoFocus={true}
                       autoComplete="given-name"
                       value={value}
-                    ></TextInput>
+                    />
                   </View>
                 </View>
               )}
@@ -164,7 +165,7 @@ export default function SignUpPage() {
                       onBlur={onBlur}
                       autoComplete="family-name"
                       value={value}
-                    ></TextInput>
+                    />
                   </View>
                 </View>
               )}
@@ -183,7 +184,7 @@ export default function SignUpPage() {
                       value={value}
                       autoComplete="email"
                       keyboardType="email-address"
-                    ></TextInput>
+                    />
                   </View>
                 </View>
               )}
@@ -201,7 +202,7 @@ export default function SignUpPage() {
                       onBlur={onBlur}
                       value={value}
                       autoComplete="password-new"
-                    ></TextInput>
+                    />
                   </View>
                 </View>
               )}
@@ -223,12 +224,10 @@ export default function SignUpPage() {
               </Link>
             </View>
           </View>
-        </TouchableWithoutFeedback>
-      ) : (
-        <View className="text-center">
-          <CodeInput />
-        </View>
-      )}
-    </KeyboardAvoidingView>
+        ) : (
+          <CodeInput onVerify={onPressVerify} />
+        )}
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
