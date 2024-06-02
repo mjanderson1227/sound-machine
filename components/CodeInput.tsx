@@ -29,8 +29,8 @@ export default function CodeInput({
   const updateCode = (idx: number, text: string) => {
     setCode((previousCode) =>
       previousCode.map((prevText, curIndex) =>
-        curIndex === idx ? text : prevText,
-      ),
+        curIndex === idx ? text : prevText
+      )
     );
   };
 
@@ -44,13 +44,13 @@ export default function CodeInput({
 
   return (
     <View>
-      <Text className="text-center text-3xl mb-2 font-bold">
+      <Text className="mb-2 text-center text-3xl font-bold">
         Enter Verification Code
       </Text>
-      <Text className="text-center mb-10 text-xl">
+      <Text className="mb-10 text-center text-xl">
         Please enter the verification code that was sent to your email.
       </Text>
-      <View className="flex-row justify-between mb-10">
+      <View className="mb-10 flex-row justify-between">
         {code.map((_, idx) => (
           <View style={styles.inputBox} key={idx}>
             <TextInput
@@ -72,9 +72,9 @@ export default function CodeInput({
       </View>
       <TouchableOpacity
         onPress={onVerify(code.join(""))}
-        className="bg-slate-800 w-full h-12 items-center justify-center rounded-xl"
+        className="h-12 w-full items-center justify-center rounded-xl bg-slate-800"
       >
-        <Text className="text-lg text-white font-bold">Verify</Text>
+        <Text className="text-lg font-bold text-white">Verify</Text>
       </TouchableOpacity>
     </View>
   );

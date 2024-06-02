@@ -18,6 +18,7 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import CodeInput from "@/components/CodeInput";
+import { ErrorMessage } from "@hookform/error-message";
 
 const styles = StyleSheet.create({
   inputBox: {
@@ -95,7 +96,7 @@ export default function SignUpPage() {
         alertError(
           errorResponse.message === "is unknown"
             ? errorResponse.longMessage
-            : errorResponse.message,
+            : errorResponse.message
         );
       } else {
         alertError("An unknown error has occurred");
@@ -123,12 +124,12 @@ export default function SignUpPage() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} className="h-full">
       <KeyboardAvoidingView
-        className="bg-white h-full rounded-xl text-black px-10 pt-10 justify-center"
+        className="rh-full justify-center rounded-xl bg-white px-10 pt-10 text-black"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         {!pendingVerification ? (
           <View>
-            <Text className="mb-3 text-2xl font-bold text-center">
+            <Text className="mb-3 text-center text-2xl font-bold">
               Sign up for Serenity
             </Text>
             <Text className="mb-10 text-center">
@@ -139,7 +140,7 @@ export default function SignUpPage() {
               control={control}
               render={({ field: { onChange, value, onBlur } }) => (
                 <View>
-                  <Text className="font-bold mb-2">First Name</Text>
+                  <Text className="mb-2 font-bold">First Name</Text>
                   <View style={styles.inputBox}>
                     <TextInput
                       className="w-full"
@@ -157,7 +158,7 @@ export default function SignUpPage() {
               control={control}
               render={({ field: { onChange, value, onBlur } }) => (
                 <View>
-                  <Text className="font-bold mb-2">Last Name</Text>
+                  <Text className="mb-2 font-bold">Last Name</Text>
                   <View style={styles.inputBox}>
                     <TextInput
                       className="w-full"
@@ -175,7 +176,7 @@ export default function SignUpPage() {
               control={control}
               render={({ field: { onChange, value, onBlur } }) => (
                 <View>
-                  <Text className="font-bold mb-2">Email Address</Text>
+                  <Text className="mb-2 font-bold">Email Address</Text>
                   <View style={styles.inputBox}>
                     <TextInput
                       className="w-full"
@@ -194,7 +195,7 @@ export default function SignUpPage() {
               control={control}
               render={({ field: { onChange, value, onBlur } }) => (
                 <View>
-                  <Text className="font-bold mb-2">Password</Text>
+                  <Text className="mb-2 font-bold">Password</Text>
                   <View style={styles.inputBox}>
                     <TextInput
                       className="w-full"
@@ -209,17 +210,17 @@ export default function SignUpPage() {
             />
             <TouchableOpacity
               onPress={handleSubmit(onSignUpPress)}
-              className="mb-8 bg-slate-800 w-full h-12 items-center justify-center rounded-xl"
+              className="mb-8 h-12 w-full items-center justify-center rounded-xl bg-slate-800 font-bold"
             >
-              <Text className="text-white font-bold text-lg">Sign up</Text>
+              <Text className="text-lg font-bold text-white">Sign up</Text>
             </TouchableOpacity>
-            <View className="flex-row justify-center gap-2 mb-8">
+            <View className="mb-8 flex-row justify-center gap-2">
               <View style={styles.viewLine} />
               <Text className="font-bold">or</Text>
               <View style={styles.viewLine} />
             </View>
-            <View className="font-bold text-lg bg-slate-800 w-full h-12 rounded-xl justify-center items-center">
-              <Link href="/login" className="text-white font-bold text-lg">
+            <View className="h-12 w-full items-center justify-center rounded-xl bg-slate-800 text-lg font-bold text-white">
+              <Link href="/login" className="text-lg font-bold text-white">
                 Log in
               </Link>
             </View>

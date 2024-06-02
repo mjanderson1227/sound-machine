@@ -1,4 +1,4 @@
-module.exports = {
+const config = {
   expo: {
     name: "serenity",
     slug: "serenity",
@@ -35,3 +35,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 type LoginData = z.infer<typeof loginSchema>;
 
 const alertError = (message?: string) =>
-  Alert.alert("An Error occurred", message);
+  Alert.alert("An Error occurred", message ?? "An unknown error has occurred.");
 
 export default function LoginPage() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -63,23 +63,24 @@ export default function LoginPage() {
     } catch (err: unknown) {
       if (isClerkAPIResponseError(err)) {
         const errorResponse = err.errors[0];
+
         alertError(
           errorResponse.message === "is unknown"
             ? errorResponse.longMessage
-            : errorResponse.message,
+            : errorResponse.message
         );
       } else {
-        alertError("An unknown error has occurred.");
+        alertError();
       }
     }
   }
 
   return (
     <KeyboardAvoidingView
-      className="bg-white h-full justify-center px-8"
+      className="h-full justify-center bg-white px-8"
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <Text className="mb-3 text-2xl font-bold text-center">
+      <Text className="mb-3 text-center text-2xl font-bold">
         Sign in to Serenity
       </Text>
       <Text className="mb-10 text-center">
@@ -90,7 +91,7 @@ export default function LoginPage() {
         control={control}
         render={({ field: { onChange, value, onBlur } }) => (
           <View>
-            <Text className="font-bold mb-2">Email Address</Text>
+            <Text className="mb-2 font-bold">Email Address</Text>
             <View style={styles.inputBox}>
               <TextInput
                 className="w-full"
@@ -109,7 +110,7 @@ export default function LoginPage() {
         control={control}
         render={({ field: { onChange, value, onBlur } }) => (
           <View>
-            <Text className="font-bold mb-2">Password</Text>
+            <Text className="mb-2 font-bold">Password</Text>
             <View style={styles.inputBox}>
               <TextInput
                 className="w-full"
@@ -124,9 +125,9 @@ export default function LoginPage() {
       />
       <TouchableOpacity
         onPress={handleSubmit(onSignIn)}
-        className="mb-8 bg-slate-800 w-full h-12 items-center justify-center rounded-xl"
+        className="mb-8 h-12 w-full items-center justify-center rounded-xl bg-slate-800"
       >
-        <Text className="text-white font-bold text-lg">Sign up</Text>
+        <Text className="text-lg font-bold text-white">Sign up</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
   );
