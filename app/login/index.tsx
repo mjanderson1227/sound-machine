@@ -1,5 +1,6 @@
 import {
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Dimensions,
   View,
   TextInput,
@@ -8,11 +9,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Keyboard,
 } from "react-native";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { isClerkAPIResponseError, useSignIn } from "@clerk/clerk-expo";
+import { ErrorMessage } from "@hookform/error-message";
+import { useRouter } from "expo-router";
 
 const loginSchema = z.object({
   emailAddress: z.string().email().max(100).min(4),
@@ -40,6 +44,7 @@ const alertError = (message?: string) =>
 
 export default function LoginPage() {
   const { signIn, setActive, isLoaded } = useSignIn();
+  const router = useRouter();
   const {
     handleSubmit,
     control,
@@ -60,6 +65,7 @@ export default function LoginPage() {
       });
 
       await setActive({ session: signInSession.createdSessionId });
+      router.navigate("/");
     } catch (err: unknown) {
       if (isClerkAPIResponseError(err)) {
         const errorResponse = err.errors[0];
@@ -76,59 +82,79 @@ export default function LoginPage() {
   }
 
   return (
-    <KeyboardAvoidingView
-      className="h-full justify-center bg-white px-8"
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <Text className="mb-3 text-center text-2xl font-bold">
-        Sign in to Serenity
-      </Text>
-      <Text className="mb-10 text-center">
-        Welcome back! Please sign in to your account to continue.
-      </Text>
-      <Controller
-        name="emailAddress"
-        control={control}
-        render={({ field: { onChange, value, onBlur } }) => (
-          <View>
-            <Text className="mb-2 font-bold">Email Address</Text>
-            <View style={styles.inputBox}>
-              <TextInput
-                className="w-full"
-                onChangeText={onChange}
-                onBlur={onBlur}
-                value={value}
-                autoComplete="email"
-                keyboardType="email-address"
-              />
-            </View>
-          </View>
-        )}
-      />
-      <Controller
-        name="password"
-        control={control}
-        render={({ field: { onChange, value, onBlur } }) => (
-          <View>
-            <Text className="mb-2 font-bold">Password</Text>
-            <View style={styles.inputBox}>
-              <TextInput
-                className="w-full"
-                onChangeText={onChange}
-                onBlur={onBlur}
-                value={value}
-                autoComplete="password-new"
-              />
-            </View>
-          </View>
-        )}
-      />
-      <TouchableOpacity
-        onPress={handleSubmit(onSignIn)}
-        className="mb-8 h-12 w-full items-center justify-center rounded-xl bg-slate-800"
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        className="h-full bg-white px-8 pt-32"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <Text className="text-lg font-bold text-white">Sign up</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+        <Text className="mb-3 text-center text-2xl font-bold">
+          Sign in to Serenity
+        </Text>
+        <Text className="mb-10 text-center">
+          Welcome back! Please sign in to your account to continue.
+        </Text>
+        <Controller
+          name="emailAddress"
+          control={control}
+          render={({ field: { onChange, value, onBlur, name } }) => (
+            <View>
+              <View className="mb-2 flex-row justify-between">
+                <Text className="font-bold">Email Address</Text>
+                <ErrorMessage
+                  name={name}
+                  errors={errors}
+                  render={({ message }) => (
+                    <Text className="mb-2 text-red-500">{message}</Text>
+                  )}
+                />
+              </View>
+              <View style={styles.inputBox}>
+                <TextInput
+                  className="w-full"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  autoComplete="email"
+                  keyboardType="email-address"
+                />
+              </View>
+            </View>
+          )}
+        />
+        <Controller
+          name="password"
+          control={control}
+          render={({ field: { onChange, value, onBlur, name } }) => (
+            <View>
+              <View className="mb-2 flex-row justify-between">
+                <Text className="font-bold">Password</Text>
+                <ErrorMessage
+                  name={name}
+                  errors={errors}
+                  render={({ message }) => (
+                    <Text className="mb-2 text-red-500">{message}</Text>
+                  )}
+                />
+              </View>
+              <View style={styles.inputBox}>
+                <TextInput
+                  className="w-full"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  autoComplete="password-new"
+                />
+              </View>
+            </View>
+          )}
+        />
+        <TouchableOpacity
+          onPress={handleSubmit(onSignIn)}
+          className="mb-8 h-12 w-full items-center justify-center rounded-xl bg-slate-800"
+        >
+          <Text className="text-lg font-bold text-white">Sign In</Text>
+        </TouchableOpacity>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }

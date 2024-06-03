@@ -124,7 +124,7 @@ export default function SignUpPage() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} className="h-full">
       <KeyboardAvoidingView
-        className="rh-full justify-center rounded-xl bg-white px-10 pt-10 text-black"
+        className="h-full justify-center rounded-xl bg-white px-10 pt-10 text-black"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         {!pendingVerification ? (
@@ -138,9 +138,18 @@ export default function SignUpPage() {
             <Controller
               name="firstName"
               control={control}
-              render={({ field: { onChange, value, onBlur } }) => (
+              render={({ field: { onChange, value, onBlur, name } }) => (
                 <View>
-                  <Text className="mb-2 font-bold">First Name</Text>
+                  <View className="mb-2 flex-row justify-between">
+                    <Text className="font-bold">First Name</Text>
+                    <ErrorMessage
+                      name={name}
+                      errors={errors}
+                      render={({ message }) => (
+                        <Text className="mb-2 text-red-500">{message}</Text>
+                      )}
+                    />
+                  </View>
                   <View style={styles.inputBox}>
                     <TextInput
                       className="w-full"
@@ -156,9 +165,18 @@ export default function SignUpPage() {
             <Controller
               name="lastName"
               control={control}
-              render={({ field: { onChange, value, onBlur } }) => (
+              render={({ field: { onChange, value, onBlur, name } }) => (
                 <View>
-                  <Text className="mb-2 font-bold">Last Name</Text>
+                  <View className="mb-2 flex-row justify-between">
+                    <Text className="font-bold">Last Name</Text>
+                    <ErrorMessage
+                      name={name}
+                      errors={errors}
+                      render={({ message }) => (
+                        <Text className="mb-2 text-red-500">{message}</Text>
+                      )}
+                    />
+                  </View>
                   <View style={styles.inputBox}>
                     <TextInput
                       className="w-full"
@@ -174,9 +192,18 @@ export default function SignUpPage() {
             <Controller
               name="emailAddress"
               control={control}
-              render={({ field: { onChange, value, onBlur } }) => (
+              render={({ field: { onChange, value, onBlur, name } }) => (
                 <View>
-                  <Text className="mb-2 font-bold">Email Address</Text>
+                  <View className="mb-2 flex-row justify-between">
+                    <Text className="font-bold">Email Address</Text>
+                    <ErrorMessage
+                      name={name}
+                      errors={errors}
+                      render={({ message }) => (
+                        <Text className="mb-2 text-red-500">{message}</Text>
+                      )}
+                    />
+                  </View>
                   <View style={styles.inputBox}>
                     <TextInput
                       className="w-full"
@@ -193,9 +220,18 @@ export default function SignUpPage() {
             <Controller
               name="password"
               control={control}
-              render={({ field: { onChange, value, onBlur } }) => (
+              render={({ field: { onChange, value, onBlur, name } }) => (
                 <View>
-                  <Text className="mb-2 font-bold">Password</Text>
+                  <View className="mb-2 flex-row justify-between">
+                    <Text className="font-bold">Password</Text>
+                    <ErrorMessage
+                      name={name}
+                      errors={errors}
+                      render={({ message }) => (
+                        <Text className="mb-2 text-red-500">{message}</Text>
+                      )}
+                    />
+                  </View>
                   <View style={styles.inputBox}>
                     <TextInput
                       className="w-full"
@@ -219,9 +255,12 @@ export default function SignUpPage() {
               <Text className="font-bold">or</Text>
               <View style={styles.viewLine} />
             </View>
-            <View className="h-12 w-full items-center justify-center rounded-xl bg-slate-800 text-lg font-bold text-white">
-              <Link href="/login" className="text-lg font-bold text-white">
-                Log in
+            <View className="h-12 w-full items-center justify-center rounded-xl bg-slate-800 pt-3 text-lg font-bold text-white">
+              <Link
+                href="/login"
+                className="h-full w-full text-center text-lg font-bold text-white"
+              >
+                <Text>Log in</Text>
               </Link>
             </View>
           </View>
